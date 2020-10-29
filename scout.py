@@ -4,6 +4,7 @@ import json
 import argparse
 import requests as r
 import os
+import socket
 from scapy.all import *
 
 def ping(network,starting_host,ending_host,timeout_):
@@ -64,6 +65,21 @@ args = parser.parse_args()
 
 start = args.starting_host
 end = args.ending_host
+
+try:
+    socket.inet_aton(start) 
+    socket.inet_aton(end)
+except:
+    print("[!] Illegal IP passed as host.")
+    sys.exit(1)
+
+net_a = start.split('.')
+net_a.pop()
+net_b = end.split('.')
+net_b.pop()
+if '.'.join(net_a) != '.'.join(net_b):
+    print("[!] Please provide ranges between the same network.")
+    sys.exit(1)
 
 tmp = start.split('.')[-1]
 start = start.split('.')
